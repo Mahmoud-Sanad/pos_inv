@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id               Int               @id @default(autoincrement())
+  name             String
+  domain           String            @unique
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  licensesExpireAt DateTime?
+  lastPaymentDate  DateTime?
+  packageType      String?
+  taxRate          Float             @default(0)
+  maxUsers         Int               @default(4)
+  config           Json? // { "currency": "USD", colors :[]   }
+  users            User[]
+  products         Product[]
+  warehouses       Warehouse[]
+  inventories      Inventory[]
+  inventoryLogs    InventoryLogs[]
+  manfactureOrders manfactureOrder[]
+  payments         Payments[]
+  suppliers        Supplier[]
+}
+
+model Package {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description Json?
+  price       Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  companyId Int
+  company   Company   @relation(fields: [companyId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model Product {
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String?
+  image         String?
+  isSellable    Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  minStock      Int             @default(0)
+  companyId     Int
+  quantityType  String          @default("pcs")
+  avgPrice      Float           @default(0)
+  avgCost       Float           @default(0)
+  company       Company         @relation(fields: [companyId], references: [id])
+  createdBy     Int
+  user          User            @relation(fields: [createdBy], references: [id])
+  inventories   Inventory[]
+  inventoryLogs InventoryLogs[]
+}
+
+model Warehouse {
+  id                Int               @id @default(autoincrement())
+  name              String
+  location          String?
+  isFactory         Boolean           @default(false)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  companyId         Int
+  company           Company           @relation(fields: [companyId], references: [id])
+  inventories       Inventory[]
+  inventoryLogsFrom InventoryLogs[]   @relation("WarehouseFrom")
+  inventoryLogsTo   InventoryLogs[]   @relation("WarehouseTo")
+  manfactureOrders  manfactureOrder[]
+}
+
+model Inventory {
+  id          Int       @id @default(autoincrement())
+  quantity    Int
+  productId   Int
+  warehouseId Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  product     Product   @relation(fields: [productId], references: [id])
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  companyId   Int
+  company     Company   @relation(fields: [companyId], references: [id])
+}
+
+model InventoryLogs {
+  companyId       Int
+  company         Company    @relation(fields: [companyId], references: [id])
+  id              Int        @id @default(autoincrement())
+  action_type     actionType
+  productId       Int?
+  warehouseFromId Int?
+  warehouseToId   Int?
+  quantity        Int?
+  product         Product?   @relation(fields: [productId], references: [id])
+  warehouseFrom   Warehouse? @relation("WarehouseFrom", fields: [warehouseFromId], references: [id])
+  warehouseTo     Warehouse? @relation("WarehouseTo", fields: [warehouseToId], references: [id])
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model manfactureOrder {
+  id           Int        @id @default(autoincrement())
+  productsFrom Json? //[{ productId: number, quantity: number }]
+  productsTo   Json? //[{ productId: number, quantity: number }]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  companyId    Int
+  company      Company    @relation(fields: [companyId], references: [id])
+  warehouseId  Int?
+  warehouse    Warehouse? @relation(fields: [warehouseId], references: [id])
+}
+
+model Payments {
+  id         Int       @id @default(autoincrement())
+  amount     Float
+  products   Json? //[{ productId: number, quantity: number , price: number }]
+  supplierId Int?
+  supplier   Supplier? @relation(fields: [supplierId], references: [id])
+  status     String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  companyId  Int
+  company    Company   @relation(fields: [companyId], references: [id])
+}
+
+model Supplier {
+  id         Int        @id @default(autoincrement())
+  name       String
+  contact    String?
+  debtAmount Float      @default(0)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  companyId  Int
+  company    Company    @relation(fields: [companyId], references: [id])
+  payments   Payments[]
+}
+
+enum actionType {
+  MOVEMENT
+  ADD
+  SUBTRACT
+}
