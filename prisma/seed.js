@@ -36,13 +36,16 @@ async function main() {
 
   // 3. Users
   const users = [];
+  const bcrypt = require('bcryptjs');
+  const hashedPassword = await bcrypt.hash('password', 12);
+
   for (const [i, company] of companies.entries()) {
     for (let j = 1; j <= 10; j++) {
       users.push(
         await prisma.user.create({
           data: {
             email: `user${j}_company${i + 1}@mail.com`,
-            password: 'password',
+            password: hashedPassword,
             companyId: company.id,
           },
         })
