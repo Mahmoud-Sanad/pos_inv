@@ -2,7 +2,84 @@ const { PrismaClient } = require('@prisma/client');;
 const { AppError } = require('../utils/error');
 
 const prisma = new PrismaClient();
+const initCompany = async (company)=> {
+ try {
+ // create 4 users with different roles (admin , inventory_manager, CEO, finance_manager) and assign them to the company.
+ // create 4 warehouses and assign them to the company.
+ const domain = company.domain;
+  await prisma.user.create({
+   data: {
+     name: 'Admin User',
+     email: `admin@${domain}`,
+     password: `admin@password@${domain}`,
+     companyId: company.id,
+     role: 'admin'
+   }
+ });
+  await prisma.user.create({
+   data: {
+     name: 'Inventory Manager',
+      email: `inventory_manager@${domain}`,
+      password: `inventory_manager@password@${domain}`,
+      companyId: company.id,
+      role: 'inventory_manager'
+    }
+  });
+   await prisma.user.create({
+    data: {
+      name: 'CEO',
+      email: `ceo@${domain}`,
+      password: `ceo@password@${domain}`,
+      companyId: company.id,
+      role: 'CEO'
+    }
+  });
+   await prisma.user.create({
+    data: {
+      name: 'Finance Manager',
+      email: `finance_manager@${domain}`,
+      password: `finance_manager@password@${domain}`,
+      companyId: company.id,
+      role: 'finance_manager'
+    }
+  });
+ await prisma.warehouse.create({
+    data: {
+      name: 'Warehouse 1',
+      location: 'Location 1',
+      isFactory: false,
+      companyId: company.id
+    }
+  });
+  await prisma.warehouse.create({
+    data: {
+      name: 'Warehouse 2',
+      location: 'Location 2',
+      isFactory: false,
+      companyId: company.id
+    }
+  });
+   await prisma.warehouse.create({
+    data: {
+      name: 'Warehouse 3',
+      location: 'Location 3',
+      isFactory: false,
+      companyId: company.id
+    }
+  });
+  await prisma.warehouse.create({
+    data: {
+      name: 'Warehouse 4',
+      location: 'Location 4',
+      isFactory: false,
+      companyId: company.id
+    }
+  });
 
+}catch (err) {
+    console.log(err);
+  }
+} 
 const getAllCompanies = async (req, res, next) => {
   try {
     const companies = await prisma.company.findMany();
@@ -55,7 +132,7 @@ const createCompany = async (req, res, next) => {
     const company = await prisma.company.create({
       data: req.body,
     });
-
+    await initCompany(company);
     res.status(201).json({
       status: 'success',
       data: {
@@ -66,6 +143,7 @@ const createCompany = async (req, res, next) => {
     next(err);
   }
 };
+
 
 const updateCompany = async (req, res, next) => {
   try {

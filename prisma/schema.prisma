@@ -49,6 +49,7 @@ model User {
   password  String
   companyId Int
   company   Company   @relation(fields: [companyId], references: [id])
+  role      String    @default("admin") // admin, inventory_manager, CEO, finance_manager
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   products  Product[]
