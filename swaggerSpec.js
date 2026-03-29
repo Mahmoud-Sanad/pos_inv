@@ -9,11 +9,13 @@ const options = {
       description: 'API documentation for POS Inventory system',
     },
     servers: [
-      {
+       {
         url: 'http://localhost:8090',
+        description: 'Local server',
       },
       {
-        url: 'https://demo.sportix.ae',
+        url: 'https://api.yourdomain.com',
+        description: 'Production server',
       }
     ],
   },
