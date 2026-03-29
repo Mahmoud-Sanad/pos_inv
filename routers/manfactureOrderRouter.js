@@ -33,6 +33,49 @@ router.use(protect, restrictToCompany);
  *           type: integer
  *           default: 10
  *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: List of manufacture orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 page:
+ *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *                 total:
+ *                   type: integer
+ *                 results:
+ *                   type: integer
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     manfactureOrders:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                           productsFrom:
+ *                             type: object
+ *                           productsTo:
+ *                             type: object
+ *                           companyId:
+ *                             type: integer
+ *                           warehouseId:
+ *                             type: integer
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
+ *                           # Add more fields as needed
  *   post:
  *     summary: Create a manufacture order
  *     tags: [Manufacture Orders]

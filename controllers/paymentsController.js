@@ -21,6 +21,22 @@ const getAllPayments = async (req, res, next) => {
       prisma.payments.count({ where: { companyId: req.companyId } })
     ]);
 
+    // Populate products in payments
+    const allProductIds = [];
+    payments.forEach(payment => {
+      if (Array.isArray(payment.products)) {
+        payment.products.forEach(item => item.productId && allProductIds.push(item.productId));
+      }
+    });
+    const uniqueProductIds = [...new Set(allProductIds)];
+    const products = uniqueProductIds.length > 0 ? await prisma.product.findMany({ where: { id: { in: uniqueProductIds } } }) : [];
+    const productMap = Object.fromEntries(products.map(p => [p.id, p]));
+    payments.forEach(payment => {
+      if (Array.isArray(payment.products)) {
+        payment.products = payment.products.map(item => ({ ...item, product: productMap[item.productId] || null }));
+      }
+    });
+
     res.status(200).json({
       status: 'success',
       page,

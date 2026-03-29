@@ -21,6 +21,28 @@ const getAllManfactureOrders = async (req, res, next) => {
       prisma.manfactureOrder.count({ where: { companyId: req.companyId } })
     ]);
 
+    // Populate productsFrom and productsTo
+    const allProductIds = [];
+    manfactureOrders.forEach(order => {
+      if (Array.isArray(order.productsFrom)) {
+        order.productsFrom.forEach(item => item.productId && allProductIds.push(item.productId));
+      }
+      if (Array.isArray(order.productsTo)) {
+        order.productsTo.forEach(item => item.productId && allProductIds.push(item.productId));
+      }
+    });
+    const uniqueProductIds = [...new Set(allProductIds)];
+    const products = uniqueProductIds.length > 0 ? await prisma.product.findMany({ where: { id: { in: uniqueProductIds } } }) : [];
+    const productMap = Object.fromEntries(products.map(p => [p.id, p]));
+    manfactureOrders.forEach(order => {
+      if (Array.isArray(order.productsFrom)) {
+        order.productsFrom = order.productsFrom.map(item => ({ ...item, product: productMap[item.productId] || null }));
+      }
+      if (Array.isArray(order.productsTo)) {
+        order.productsTo = order.productsTo.map(item => ({ ...item, product: productMap[item.productId] || null }));
+      }
+    });
+
     res.status(200).json({
       status: 'success',
       page,
