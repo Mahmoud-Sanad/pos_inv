@@ -25,6 +25,24 @@ router.use(protect, restrictToCompany);
  *     tags: [Suppliers]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - companyId
+ *             properties:
+ *               name:
+ *                 type: string
+ *               contact:
+ *                 type: string
+ *               debtAmount:
+ *                 type: number
+ *               companyId:
+ *                 type: integer
  */
 router
   .route('/')
@@ -44,6 +62,21 @@ router
  *     tags: [Suppliers]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               contact:
+ *                 type: string
+ *               debtAmount:
+ *                 type: number
+ *               companyId:
+ *                 type: integer
  *   delete:
  *     summary: Delete supplier
  *     tags: [Suppliers]

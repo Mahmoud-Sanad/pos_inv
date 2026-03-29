@@ -18,6 +18,22 @@ const router = express.Router();
  *   post:
  *     summary: Create a package
  *     tags: [Packages]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - price
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: object
+ *               price:
+ *                 type: number
  */
 router
   .route('/')
@@ -33,6 +49,19 @@ router
  *   patch:
  *     summary: Update package
  *     tags: [Packages]
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: object
+ *               price:
+ *                 type: number
  *   delete:
  *     summary: Delete package
  *     tags: [Packages]

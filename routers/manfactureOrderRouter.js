@@ -25,6 +25,39 @@ router.use(protect, restrictToCompany);
  *     tags: [Manufacture Orders]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - productsFrom
+ *               - productsTo
+ *               - companyId
+ *             properties:
+ *               productsFrom:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: integer
+ *                     quantity:
+ *                       type: integer
+ *               productsTo:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: integer
+ *                     quantity:
+ *                       type: integer
+ *               companyId:
+ *                 type: integer
+ *               warehouseId:
+ *                 type: integer
  */
 router
   .route('/')
@@ -44,6 +77,35 @@ router
  *     tags: [Manufacture Orders]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               productsFrom:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: integer
+ *                     quantity:
+ *                       type: integer
+ *               productsTo:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: integer
+ *                     quantity:
+ *                       type: integer
+ *               companyId:
+ *                 type: integer
+ *               warehouseId:
+ *                 type: integer
  *   delete:
  *     summary: Delete manufacture order
  *     tags: [Manufacture Orders]

@@ -25,6 +25,36 @@ router.use(protect, restrictToCompany);
  *     tags: [Payments]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - amount
+ *               - status
+ *               - companyId
+ *             properties:
+ *               amount:
+ *                 type: number
+ *               products:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: integer
+ *                     quantity:
+ *                       type: integer
+ *                     price:
+ *                       type: number
+ *               supplierId:
+ *                 type: integer
+ *               status:
+ *                 type: string
+ *               companyId:
+ *                 type: integer
  */
 router
   .route('/')
@@ -44,6 +74,32 @@ router
  *     tags: [Payments]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               amount:
+ *                 type: number
+ *               products:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: integer
+ *                     quantity:
+ *                       type: integer
+ *                     price:
+ *                       type: number
+ *               supplierId:
+ *                 type: integer
+ *               status:
+ *                 type: string
+ *               companyId:
+ *                 type: integer
  *   delete:
  *     summary: Delete payment
  *     tags: [Payments]

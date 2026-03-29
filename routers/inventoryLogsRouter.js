@@ -25,6 +25,28 @@ router.use(protect, restrictToCompany);
  *     tags: [Inventory Logs]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - action_type
+ *             properties:
+ *               action_type:
+ *                 type: string
+ *                 enum: [MOVEMENT, ADD, SUBTRACT]
+ *               productId:
+ *                 type: integer
+ *               warehouseFromId:
+ *                 type: integer
+ *               warehouseToId:
+ *                 type: integer
+ *               quantity:
+ *                 type: integer
+ *               companyId:
+ *                 type: integer
  */
 router
   .route('/')
@@ -44,6 +66,26 @@ router
  *     tags: [Inventory Logs]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               action_type:
+ *                 type: string
+ *                 enum: [MOVEMENT, ADD, SUBTRACT]
+ *               productId:
+ *                 type: integer
+ *               warehouseFromId:
+ *                 type: integer
+ *               warehouseToId:
+ *                 type: integer
+ *               quantity:
+ *                 type: integer
+ *               companyId:
+ *                 type: integer
  *   delete:
  *     summary: Delete inventory log
  *     tags: [Inventory Logs]

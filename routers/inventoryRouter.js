@@ -25,6 +25,25 @@ router.use(protect, restrictToCompany);
  *     tags: [Inventories]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - quantity
+ *               - productId
+ *               - warehouseId
+ *             properties:
+ *               quantity:
+ *                 type: integer
+ *               productId:
+ *                 type: integer
+ *               warehouseId:
+ *                 type: integer
+ *               companyId:
+ *                 type: integer
  */
 router
   .route('/')
@@ -44,6 +63,21 @@ router
  *     tags: [Inventories]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               quantity:
+ *                 type: integer
+ *               productId:
+ *                 type: integer
+ *               warehouseId:
+ *                 type: integer
+ *               companyId:
+ *                 type: integer
  *   delete:
  *     summary: Delete inventory
  *     tags: [Inventories]
