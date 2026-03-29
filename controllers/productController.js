@@ -5,12 +5,29 @@ const prisma = new PrismaClient();
 
 const getAllProducts = async (req, res, next) => {
   try {
-    const products = await prisma.product.findMany({
-      where: { companyId: req.companyId },
-    });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where: { companyId: req.companyId },
+        skip,
+        take: limit,
+        include: {
+          company: true,
+          user: true,
+          inventories: true,
+          inventoryLogs: true,
+        },
+      }),
+      prisma.product.count({ where: { companyId: req.companyId } })
+    ]);
 
     res.status(200).json({
       status: 'success',
+      page,
+      limit,
+      total,
       results: products.length,
       data: {
         products,
@@ -27,6 +44,12 @@ const getProduct = async (req, res, next) => {
       where: {
         id: parseInt(req.params.id),
         companyId: req.companyId,
+      },
+      include: {
+        company: true,
+        user: true,
+        inventories: true,
+        inventoryLogs: true,
       },
     });
 

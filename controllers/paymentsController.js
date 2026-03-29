@@ -5,12 +5,27 @@ const prisma = new PrismaClient();
 
 const getAllPayments = async (req, res, next) => {
   try {
-    const payments = await prisma.payments.findMany({
-      where: { companyId: req.companyId },
-    });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const [payments, total] = await Promise.all([
+      prisma.payments.findMany({
+        where: { companyId: req.companyId },
+        skip,
+        take: limit,
+        include: {
+          company: true,
+          supplier: true,
+        },
+      }),
+      prisma.payments.count({ where: { companyId: req.companyId } })
+    ]);
 
     res.status(200).json({
       status: 'success',
+      page,
+      limit,
+      total,
       results: payments.length,
       data: {
         payments,
@@ -27,6 +42,10 @@ const getPayment = async (req, res, next) => {
       where: {
         id: parseInt(req.params.id),
         companyId: req.companyId,
+      },
+      include: {
+        company: true,
+        supplier: true,
       },
     });
 

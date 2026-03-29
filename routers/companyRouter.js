@@ -16,6 +16,19 @@ const router = express.Router();
  *   get:
  *     summary: Get all companies
  *     tags: [Companies]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
  *     responses:
  *       200:
  *         description: List of companies
@@ -62,6 +75,7 @@ router.route('/').get(getAllCompanies).post(createCompany);
  *         required: true
  *         schema:
  *           type: integer
+ *         description: Company ID
  *     responses:
  *       200:
  *         description: Company data
@@ -78,6 +92,7 @@ router.route('/').get(getAllCompanies).post(createCompany);
  *         required: true
  *         schema:
  *           type: integer
+ *         description: Company ID
  *     requestBody:
  *       required: true
  *       content:
@@ -85,6 +100,19 @@ router.route('/').get(getAllCompanies).post(createCompany);
  *           schema:
  *             type: object
  *             properties:
+ *               # ...existing code...
+ *   delete:
+ *     summary: Delete a company
+ *     tags: [Companies]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Company ID
  *               name:
  *                 type: string
  *               domain:

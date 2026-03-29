@@ -20,6 +20,19 @@ router.use(protect, restrictToCompany);
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
  *     responses:
  *       200:
  *         description: List of products
@@ -78,6 +91,7 @@ router
  *         required: true
  *         schema:
  *           type: integer
+ *         description: Product ID
  *     responses:
  *       200:
  *         description: Product data
@@ -96,6 +110,7 @@ router
  *         required: true
  *         schema:
  *           type: integer
+ *         description: Product ID
  *     requestBody:
  *       required: true
  *       content:
@@ -103,6 +118,19 @@ router
  *           schema:
  *             type: object
  *             properties:
+ *               # ...existing code...
+ *   delete:
+ *     summary: Delete a product
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Product ID
  *               name:
  *                 type: string
  *               description:

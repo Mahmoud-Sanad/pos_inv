@@ -20,6 +20,19 @@ router.use(protect, restrictToCompany);
  *     tags: [Manufacture Orders]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
  *   post:
  *     summary: Create a manufacture order
  *     tags: [Manufacture Orders]
@@ -72,11 +85,25 @@ router
  *     tags: [Manufacture Orders]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Manufacture Order ID
  *   patch:
  *     summary: Update manufacture order
  *     tags: [Manufacture Orders]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Manufacture Order ID
  *     requestBody:
  *       required: false
  *       content:
@@ -84,6 +111,19 @@ router
  *           schema:
  *             type: object
  *             properties:
+ *               # ...existing code...
+ *   delete:
+ *     summary: Delete manufacture order
+ *     tags: [Manufacture Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Manufacture Order ID
  *               productsFrom:
  *                 type: array
  *                 items:

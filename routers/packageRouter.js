@@ -15,6 +15,19 @@ const router = express.Router();
  *   get:
  *     summary: Get all packages
  *     tags: [Packages]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
  *   post:
  *     summary: Create a package
  *     tags: [Packages]
@@ -46,9 +59,23 @@ router
  *   get:
  *     summary: Get package by ID
  *     tags: [Packages]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Package ID
  *   patch:
  *     summary: Update package
  *     tags: [Packages]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Package ID
  *     requestBody:
  *       required: false
  *       content:
@@ -56,6 +83,17 @@ router
  *           schema:
  *             type: object
  *             properties:
+ *               # ...existing code...
+ *   delete:
+ *     summary: Delete package
+ *     tags: [Packages]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Package ID
  *               name:
  *                 type: string
  *               description:

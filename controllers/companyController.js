@@ -82,10 +82,32 @@ const initCompany = async (company)=> {
 } 
 const getAllCompanies = async (req, res, next) => {
   try {
-    const companies = await prisma.company.findMany();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const [companies, total] = await Promise.all([
+      prisma.company.findMany({
+        skip,
+        take: limit,
+        include: {
+          users: true,
+          products: true,
+          warehouses: true,
+          inventories: true,
+          inventoryLogs: true,
+          manfactureOrders: true,
+          payments: true,
+          suppliers: true,
+        },
+      }),
+      prisma.company.count()
+    ]);
 
     res.status(200).json({
       status: 'success',
+      page,
+      limit,
+      total,
       results: companies.length,
       data: {
         companies,

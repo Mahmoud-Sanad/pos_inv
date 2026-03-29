@@ -5,10 +5,19 @@ const prisma = new PrismaClient();
 
 const getAllPackages = async (req, res, next) => {
   try {
-    const packages = await prisma.package.findMany();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const [packages, total] = await Promise.all([
+      prisma.package.findMany({ skip, take: limit }),
+      prisma.package.count()
+    ]);
 
     res.status(200).json({
       status: 'success',
+      page,
+      limit,
+      total,
       results: packages.length,
       data: {
         packages,

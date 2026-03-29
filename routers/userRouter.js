@@ -100,6 +100,19 @@ router.get('/me', getMe, getUser);
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
  *     responses:
  *       200:
  *         description: List of users
@@ -122,6 +135,7 @@ router.route('/').get(restrictToCompany, getAllUsers);
  *         required: true
  *         schema:
  *           type: integer
+ *         description: User ID
  *     responses:
  *       200:
  *         description: User data
@@ -140,6 +154,7 @@ router.route('/').get(restrictToCompany, getAllUsers);
  *         required: true
  *         schema:
  *           type: integer
+ *         description: User ID
  *     requestBody:
  *       required: true
  *       content:
@@ -147,6 +162,19 @@ router.route('/').get(restrictToCompany, getAllUsers);
  *           schema:
  *             type: object
  *             properties:
+ *               # ...existing code...
+ *   delete:
+ *     summary: Delete a user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: User ID
  *               email:
  *                 type: string
  *                 format: email

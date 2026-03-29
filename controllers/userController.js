@@ -64,13 +64,29 @@ const login = async (req, res, next) => {
 };
 
 const getAllUsers = async (req, res, next) => {
+
   try {
-    const users = await prisma.user.findMany({
-      where: { companyId: req.companyId },
-    });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const [users, total] = await Promise.all([
+      prisma.user.findMany({
+        where: { companyId: req.companyId },
+        skip,
+        take: limit,
+        include: {
+          company: true,
+          products: true,
+        },
+      }),
+      prisma.user.count({ where: { companyId: req.companyId } })
+    ]);
 
     res.status(200).json({
       status: 'success',
+      page,
+      limit,
+      total,
       results: users.length,
       data: {
         users,
@@ -80,13 +96,16 @@ const getAllUsers = async (req, res, next) => {
     next(err);
   }
 };
-
 const getUser = async (req, res, next) => {
   try {
     const user = await prisma.user.findFirst({
       where: {
         id: parseInt(req.params.id),
         companyId: req.companyId,
+      },
+      include: {
+        company: true,
+        products: true,
       },
     });
 

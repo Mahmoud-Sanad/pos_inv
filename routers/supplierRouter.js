@@ -20,6 +20,19 @@ router.use(protect, restrictToCompany);
  *     tags: [Suppliers]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
  *   post:
  *     summary: Create a supplier
  *     tags: [Suppliers]
@@ -57,11 +70,25 @@ router
  *     tags: [Suppliers]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Supplier ID
  *   patch:
  *     summary: Update supplier
  *     tags: [Suppliers]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Supplier ID
  *     requestBody:
  *       required: false
  *       content:
@@ -69,6 +96,19 @@ router
  *           schema:
  *             type: object
  *             properties:
+ *               # ...existing code...
+ *   delete:
+ *     summary: Delete supplier
+ *     tags: [Suppliers]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Supplier ID
  *               name:
  *                 type: string
  *               contact:

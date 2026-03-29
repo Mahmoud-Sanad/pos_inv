@@ -20,6 +20,19 @@ router.use(protect, restrictToCompany);
  *     tags: [Inventory Logs]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
  *   post:
  *     summary: Create an inventory log
  *     tags: [Inventory Logs]
@@ -61,11 +74,25 @@ router
  *     tags: [Inventory Logs]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Inventory Log ID
  *   patch:
  *     summary: Update inventory log
  *     tags: [Inventory Logs]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Inventory Log ID
  *     requestBody:
  *       required: false
  *       content:
@@ -73,6 +100,19 @@ router
  *           schema:
  *             type: object
  *             properties:
+ *               # ...existing code...
+ *   delete:
+ *     summary: Delete inventory log
+ *     tags: [Inventory Logs]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Inventory Log ID
  *               action_type:
  *                 type: string
  *                 enum: [MOVEMENT, ADD, SUBTRACT]

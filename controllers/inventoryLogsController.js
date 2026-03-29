@@ -5,12 +5,29 @@ const prisma = new PrismaClient();
 
 const getAllInventoryLogs = async (req, res, next) => {
   try {
-    const inventoryLogs = await prisma.inventoryLogs.findMany({
-      where: { companyId: req.companyId },
-    });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const [inventoryLogs, total] = await Promise.all([
+      prisma.inventoryLogs.findMany({
+        where: { companyId: req.companyId },
+        skip,
+        take: limit,
+        include: {
+          company: true,
+          product: true,
+          warehouseFrom: true,
+          warehouseTo: true,
+        },
+      }),
+      prisma.inventoryLogs.count({ where: { companyId: req.companyId } })
+    ]);
 
     res.status(200).json({
       status: 'success',
+      page,
+      limit,
+      total,
       results: inventoryLogs.length,
       data: {
         inventoryLogs,
@@ -27,6 +44,12 @@ const getInventoryLog = async (req, res, next) => {
       where: {
         id: parseInt(req.params.id),
         companyId: req.companyId,
+      },
+      include: {
+        company: true,
+        product: true,
+        warehouseFrom: true,
+        warehouseTo: true,
       },
     });
 

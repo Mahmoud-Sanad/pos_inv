@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const bcrypt = require('bcryptjs');
 
 function range(n) {
   return Array.from({ length: n }, (_, i) => i + 1);
@@ -36,7 +37,6 @@ async function main() {
 
   // 3. Users
   const users = [];
-  const bcrypt = require('bcryptjs');
   const hashedPassword = await bcrypt.hash('password', 12);
 
   for (const [i, company] of companies.entries()) {
