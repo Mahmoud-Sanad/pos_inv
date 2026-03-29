@@ -31,6 +31,10 @@ const swaggerDefinition = {
       url: 'http://localhost:8090',
       description: 'Development server',
     },
+     {
+        url: 'https://demo.sportix.ae',
+        description: 'Production server',
+      }
   ],
   components: {
     securitySchemes: {

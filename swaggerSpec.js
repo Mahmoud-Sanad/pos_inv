@@ -14,7 +14,7 @@ const options = {
         description: 'Local server',
       },
       {
-        url: 'https://api.yourdomain.com',
+        url: 'https://demo.sportix.ae',
         description: 'Production server',
       }
     ],
