@@ -60,7 +60,7 @@ const getAllProducts = async (req, res, next) => {
     next(err);
   }
 };
-const productsWithStock = products.map(product => {
+const productsWithStock = (products,warehouseId) =>{ products.map(product => {
   let stock = null;
 
   if (warehouseId) {
@@ -76,6 +76,7 @@ const productsWithStock = products.map(product => {
     stock,
   };
 });
+};
 const getProduct = async (req, res, next) => {
   try {
     const product = await prisma.product.findFirst({
