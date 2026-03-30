@@ -60,7 +60,8 @@ const getAllProducts = async (req, res, next) => {
     next(err);
   }
 };
-const productsWithStock = (products,warehouseId) =>{ products.map(product => {
+const productsWithStock = (products,warehouseId) =>{ 
+  let newProducts = products.map(product => {
   let stock = null;
 
   if (warehouseId) {
@@ -76,6 +77,7 @@ const productsWithStock = (products,warehouseId) =>{ products.map(product => {
     stock,
   };
 });
+return newProducts;
 };
 const getProduct = async (req, res, next) => {
   try {
