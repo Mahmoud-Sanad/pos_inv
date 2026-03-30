@@ -109,17 +109,17 @@ const getProduct = async (req, res, next) => {
 };
 
 const createProduct = async (req, res, next) => {
-  const { name, description, price, quantityType, avgPrice,category ,sellable } = req.body;
+  const { name, description, quantityType, avgPrice,category ,sellable,minStock } = req.body;
   try {
     const product = await prisma.product.create({
       data: {
         name,
         description,
-        price,
         quantityType,
         avgPrice,
         createdBy: req.user.id,
         companyId: req.companyId,
+        minStock,
         category,
         isSellable: sellable,
         
