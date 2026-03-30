@@ -107,7 +107,7 @@ model InventoryLogs {
   companyId       Int
   company         Company    @relation(fields: [companyId], references: [id])
   id              Int        @id @default(autoincrement())
-  referenceId     String?
+  reference     String?
   action_type     actionType
   productId       Int?
   warehouseFromId Int?
