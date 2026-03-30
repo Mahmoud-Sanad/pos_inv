@@ -22,8 +22,6 @@ const getAllInventoryLogs = async (req, res, next) => {
     const [inventoryLogs, total] = await Promise.all([
       prisma.inventoryLogs.findMany({
         where,
-          
-        
         skip,
         take: limit,
         include: {

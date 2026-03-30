@@ -98,6 +98,8 @@ router.use(protect, restrictToCompany);
  *             properties:
  *               name:
  *                 type: string
+ *              category:
+ *                 type: string
  *               description:
  *                 type: string
  *               image:

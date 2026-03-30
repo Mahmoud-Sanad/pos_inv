@@ -60,6 +60,7 @@ model Product {
   name          String
   description   String?
   image         String?
+  category      String?
   isSellable    Boolean         @default(true)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
