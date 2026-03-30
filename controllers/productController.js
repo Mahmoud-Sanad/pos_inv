@@ -7,20 +7,40 @@ const getAllProducts = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const {name , warehouseId , sellable} = req.query;
     const skip = (page - 1) * limit;
+    let where = { companyId: req.companyId };
+
+    if (name) {
+      where.name = { contains: name, mode: 'insensitive' };
+    }
+
+    if (warehouseId) {
+      where.inventories = {
+        some: {
+          warehouseId: parseInt(warehouseId),
+        },
+      };
+    }
+    
+    if (sellable) {
+      where.isSellable = sellable === 'true';
+    }
+
     const [products, total] = await Promise.all([
       prisma.product.findMany({
-        where: { companyId: req.companyId },
+        where,
         skip,
         take: limit,
         include: {
-          company: true,
-          user: true,
           inventories: true,
           inventoryLogs: true,
         },
+         orderBy: {
+          createdAt: 'desc',
+        },
       }),
-      prisma.product.count({ where: { companyId: req.companyId } })
+      prisma.product.count({ where, })
     ]);
 
     res.status(200).json({
@@ -46,11 +66,10 @@ const getProduct = async (req, res, next) => {
         companyId: req.companyId,
       },
       include: {
-        company: true,
-        user: true,
         inventories: true,
         inventoryLogs: true,
       },
+     
     });
 
     if (!product) {
@@ -69,7 +88,7 @@ const getProduct = async (req, res, next) => {
 };
 
 const createProduct = async (req, res, next) => {
-  const { name, description, price, quantityType, avgPrice,category } = req.body;
+  const { name, description, price, quantityType, avgPrice,category ,sellable } = req.body;
   try {
     const product = await prisma.product.create({
       data: {
@@ -80,6 +99,8 @@ const createProduct = async (req, res, next) => {
         avgPrice,
         createdBy: req.user.id,
         companyId: req.companyId,
+        category,
+        isSellable: sellable,
         
       },
     });

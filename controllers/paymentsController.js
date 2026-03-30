@@ -82,13 +82,29 @@ const getPayment = async (req, res, next) => {
 
 const createPayment = async (req, res, next) => {
   try {
+    const {amount , supplierId, status , products } = req.body;
     const payment = await prisma.payments.create({
       data: {
-        ...req.body,
+        amount,
+        supplierId,
+        status,
+        products: Array.isArray(products) ? products : [],
         companyId: req.companyId,
       },
     });
-
+    
+    if (supplierId){
+      status === 'paid' ?
+      await prisma.supplier.update({
+        where: { id: supplierId, companyId: req.companyId },
+        data: { debtAmount: { decrement: amount } },
+      })
+        :
+      await prisma.supplier.update({
+        where: { id: supplierId, companyId: req.companyId },
+        data: { debtAmount: { increment: amount } },
+      });
+    }
     res.status(201).json({
       status: 'success',
       data: {
