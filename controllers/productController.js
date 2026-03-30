@@ -27,7 +27,7 @@ const getAllProducts = async (req, res, next) => {
       where.isSellable = sellable === 'true';
     }
 
-    const [products, total] = await Promise.all([
+    let [products, total] = await Promise.all([
       prisma.product.findMany({
         where,
         skip,
@@ -42,7 +42,10 @@ const getAllProducts = async (req, res, next) => {
       }),
       prisma.product.count({ where, })
     ]);
-
+    
+    if (warehouseId){
+      products = productsWithStock(products, warehouseId);
+    }
     res.status(200).json({
       status: 'success',
       page,
@@ -57,7 +60,22 @@ const getAllProducts = async (req, res, next) => {
     next(err);
   }
 };
+const productsWithStock = products.map(product => {
+  let stock = null;
 
+  if (warehouseId) {
+    const inventory = product.inventories.find(
+      inv => inv.warehouseId === Number(warehouseId)
+    );
+
+    stock = inventory ? inventory.quantity : 0;
+  }
+
+  return {
+    ...product,
+    stock,
+  };
+});
 const getProduct = async (req, res, next) => {
   try {
     const product = await prisma.product.findFirst({
