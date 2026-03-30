@@ -108,6 +108,8 @@ router.use(protect, restrictToCompany);
  *                 type: integer
  *               quantityType:
  *                 type: string
+ *               avgPrice:
+ *                 type: number
  *     responses:
  *       201:
  *         description: Product created

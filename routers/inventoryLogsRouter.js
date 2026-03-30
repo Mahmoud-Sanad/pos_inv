@@ -33,6 +33,24 @@ router.use(protect, restrictToCompany);
  *           type: integer
  *           default: 10
  *         description: Number of items per page
+ *       - in: query
+ *         name: dateFrom
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: Start date (inclusive) for filtering logs (ISO8601)
+ *       - in: query
+ *         name: dateTo
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: End date (inclusive) for filtering logs (ISO8601)
+ *       - in: query
+ *         name: action_type
+ *         schema:
+ *           type: string
+ *           enum: [MOVEMENT, ADD, SUBTRACT]
+ *         description: Filter by action type
  *     responses:
  *       200:
  *         description: List of inventory logs
@@ -93,20 +111,39 @@ router.use(protect, restrictToCompany);
  *             type: object
  *             required:
  *               - action_type
+ *               - productId
+ *               - quantity
  *             properties:
  *               action_type:
  *                 type: string
- *                 enum: [MOVEMENT, ADD, SUBTRACT]
+ *                 description: Type of inventory action
+ *                 enum:
+ *                   - MOVEMENT
+ *                   - ADD
+ *                   - SUBTRACT
  *               productId:
  *                 type: integer
+ *                 description: Product ID
  *               warehouseFromId:
  *                 type: integer
+ *                 description: Source warehouse ID (required for MOVEMENT)
  *               warehouseToId:
  *                 type: integer
+ *                 description: Destination warehouse ID (required for MOVEMENT, ADD, SUBTRACT)
  *               quantity:
  *                 type: integer
+ *                 description: Quantity to move/add/subtract
+ *               reference:
+ *                 type: string
+ *                 description: Optional reference or note
  *               companyId:
  *                 type: integer
+ *                 description: Company ID (usually set automatically)
+ *     responses:
+ *       201:
+ *         description: Inventory log created successfully
+ *       400:
+ *         description: Bad request
  */
 router
   .route('/')
