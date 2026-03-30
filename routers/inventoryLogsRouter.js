@@ -136,9 +136,6 @@ router.use(protect, restrictToCompany);
  *               reference:
  *                 type: string
  *                 description: Optional reference or note
- *               companyId:
- *                 type: integer
- *                 description: Company ID (usually set automatically)
  *     responses:
  *       201:
  *         description: Inventory log created successfully
