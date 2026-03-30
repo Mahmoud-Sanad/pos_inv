@@ -12,7 +12,7 @@ const getAllProducts = async (req, res, next) => {
     let where = { companyId: req.companyId };
 
     if (name) {
-      where.name = { contains: name, mode: 'insensitive' };
+      where.name = { contains: name, };
     }
 
     if (warehouseId) {
