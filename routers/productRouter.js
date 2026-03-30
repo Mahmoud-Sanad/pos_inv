@@ -98,7 +98,7 @@ router.use(protect, restrictToCompany);
  *             properties:
  *               name:
  *                 type: string
- *              category:
+ *               category:
  *                 type: string
  *               description:
  *                 type: string
