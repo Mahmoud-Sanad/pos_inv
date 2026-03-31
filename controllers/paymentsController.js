@@ -94,7 +94,7 @@ const createPayment = async (req, res, next) => {
     });
     
     if (supplierId){
-      status === 'paid' ?
+      status === 'paid' && (products == null || products.length==0)?
       await prisma.supplier.update({
         where: { id: supplierId, companyId: req.companyId },
         data: { debtAmount: { decrement: amount } },
