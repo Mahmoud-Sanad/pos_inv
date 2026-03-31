@@ -8,9 +8,15 @@ const getAllInventories = async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const {warehouseId} = req.query;
+    let whereClause = { companyId: req.companyId };
+
+    if (warehouseId) {
+      whereClause.warehouseId = parseInt(warehouseId);
+    }
     const [inventories, total] = await Promise.all([
       prisma.inventory.findMany({
-        where: { companyId: req.companyId },
+        where: whereClause,
         skip,
         take: limit,
         include: {
@@ -19,7 +25,7 @@ const getAllInventories = async (req, res, next) => {
           company: true,
         },
       }),
-      prisma.inventory.count({ where: { companyId: req.companyId } })
+      prisma.inventory.count({ where: { companyId: req.companyId , warehouseId } })
     ]);
 
     res.status(200).json({
