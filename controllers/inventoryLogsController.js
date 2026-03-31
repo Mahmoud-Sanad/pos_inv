@@ -30,6 +30,7 @@ const getAllInventoryLogs = async (req, res, next) => {
           warehouseFrom: true,
           warehouseTo: true,
         },
+        orderBy: { createdAt: 'desc' },
       }),
       prisma.inventoryLogs.count({ where: { companyId: req.companyId } })
     ]);
@@ -125,7 +126,7 @@ const createInventoryLog = async (req, res, next) => {
 
           if (action_type === 'SUBTRACT') {
             if (!warehouseToInventory || warehouseToInventory.quantity < quantity) {
-              throw new Error("Not enough stock in destination warehouse to subtract");
+              return next(new AppError("Not enough stock in target warehouse to subtract", 400));
             }
 
             // Subtract quantity from warehouseTo
@@ -162,7 +163,7 @@ const createInventoryLog = async (req, res, next) => {
           });
 
           if (!fromInventory || fromInventory.quantity < quantity) {
-            throw new Error("Not enough stock in source warehouse");
+            return next(new AppError("Not enough stock in source warehouse to move", 400));
           }
 
           await tx.inventory.update({
