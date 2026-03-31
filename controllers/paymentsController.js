@@ -82,7 +82,7 @@ const getPayment = async (req, res, next) => {
 
 const createPayment = async (req, res, next) => {
   try {
-    const {amount , supplierId, status , products } = req.body;
+    const {amount , supplierId, status , products,type} = req.body;
     const payment = await prisma.payments.create({
       data: {
         amount,
@@ -104,6 +104,58 @@ const createPayment = async (req, res, next) => {
         where: { id: supplierId, companyId: req.companyId },
         data: { debtAmount: { increment: amount } },
       });
+    }
+    if (type === 'buy' && Array.isArray(products)) 
+      {
+        for (const item of products) {
+          let warehouseId = item.warehouseId;
+          let quantity = item.quantity;
+          let productId = item.productId;
+          
+          if (!warehouseId || !quantity || !productId) {
+            continue; // Skip if any required field is missing
+          }
+
+          await prisma.inventory.update({
+            where:{
+              companyId_productId_warehouseId:{
+                companyId: req.companyId,
+                productId,
+                warehouseId,
+              }
+              },
+              data: {
+                quantity: { increment: quantity },
+            }
+          });
+        }
+
+      }
+
+    else if (type === 'sell' && Array.isArray(products))
+       {
+        for (const item of products) {
+          let warehouseId = item.warehouseId;
+          let quantity = item.quantity;
+          let productId = item.productId;
+          
+          if (!warehouseId || !quantity || !productId) {
+            continue; // Skip if any required field is missing
+          }
+          
+          await prisma.inventory.update({
+            where:{
+              companyId_productId_warehouseId:{
+                companyId: req.companyId,
+                productId,
+                warehouseId,
+              }
+              },
+              data: {
+                quantity: { decrement: quantity },
+            }
+          });
+        }
     }
     res.status(201).json({
       status: 'success',
