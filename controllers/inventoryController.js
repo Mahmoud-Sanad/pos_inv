@@ -25,7 +25,7 @@ const getAllInventories = async (req, res, next) => {
           company: true,
         },
       }),
-      prisma.inventory.count({ where: { companyId: req.companyId , warehouseId } })
+      prisma.inventory.count({ where: { companyId: req.companyId , warehouseId: parseInt(warehouseId) } })
     ]);
 
     res.status(200).json({
