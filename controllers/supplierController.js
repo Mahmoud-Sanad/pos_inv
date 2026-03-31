@@ -8,9 +8,20 @@ const getAllSuppliers = async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const { name } = req.query;
+
+    const where = {
+      companyId: req.companyId,
+    };
+
+    if (name) {
+      where.name = {
+        contains: name,
+      };
+    }
     const [suppliers, total] = await Promise.all([
       prisma.supplier.findMany({
-        where: { companyId: req.companyId },
+        where,
         skip,
         take: limit,
         include: {
@@ -29,6 +40,28 @@ const getAllSuppliers = async (req, res, next) => {
       results: suppliers.length,
       data: {
         suppliers,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+const getStats = async (req, res, next) => {
+  try {
+    const suppliers = await prisma.supplier.findMany({
+      where: {
+        companyId: req.companyId,
+      },
+    });
+    const totalDept = suppliers.reduce((acc, supplier) => acc + supplier.debtAmount, 0);
+    const totalSuppliersWithDept = suppliers.filter(supplier => supplier.debtAmount > 0).length;
+    
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        totalDept,
+        totalSuppliersWithDept,
       },
     });
   } catch (err) {
@@ -126,6 +159,7 @@ const deleteSupplier = async (req, res, next) => {
 module.exports = {
   getAllSuppliers,
   getSupplier,
+  getStats,
   createSupplier,
   updateSupplier,
   deleteSupplier,

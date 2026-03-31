@@ -5,6 +5,7 @@ const {
   createSupplier,
   updateSupplier,
   deleteSupplier,
+  getStats
 } = require('../controllers/supplierController');
 const { protect, restrictToCompany } = require('../utils/middleware');
 
@@ -33,6 +34,11 @@ router.use(protect, restrictToCompany);
  *           type: integer
  *           default: 10
  *         description: Number of items per page
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: Filter suppliers by name (partial match)
  *     responses:
  *       200:
  *         description: List of suppliers
@@ -166,6 +172,39 @@ router
  *     security:
  *       - bearerAuth: []
  */
+
+/**
+ * @swagger
+ * /api/v1/suppliers/stats:
+ *   get:
+ *     summary: Get supplier statistics
+ *     tags: [Suppliers]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Supplier statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     totalSuppliersWithDept:
+ *                       type: integer
+ *                       example: 15
+ *                     totalDeptAmount:
+ *                       type: number
+ *                       format: float
+ *                       example: 24500.75
+ */
+
+router.route('/stats').get(getStats);
 router
   .route('/:id')
   .get(getSupplier)
